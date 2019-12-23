@@ -1,0 +1,6 @@
+.vscode
+build/
+vendor/
+__debug_bin
+
+dav-proxy
