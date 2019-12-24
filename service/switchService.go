@@ -15,10 +15,10 @@ import (
 
 // SwitchService todo
 type SwitchService struct {
-	SvcPart    k8s.FuncService
-	K8sClient  *kubernetes.Clientset
-	HTTPClient *http.Client
-	DomainURL  string
+	SvcPart      k8s.FuncService
+	K8sClient    *kubernetes.Clientset
+	HTTPClient   *http.Client
+	WebDomainURL string
 }
 
 // SwitchServiceNew todo
@@ -26,9 +26,9 @@ func SwitchServiceNew(cfg config.Config, k8sClient *kubernetes.Clientset) *Switc
 	parts := strings.Split(cfg.Get("ENV_PROXY_WEBAPP_LISTEN_ADDRESS"), ":")
 	httpClient, _ := httpclient.New(cfg)
 	return &SwitchService{
-		SvcPart:    svc.New(k8sClient, parts[1]),
-		DomainURL:  cfg.Get("WEB_DOMAIN_URL"),
-		HTTPClient: httpClient,
+		SvcPart:      svc.New(k8sClient, parts[1]),
+		WebDomainURL: cfg.Get("WEB_DOMAIN_URL"),
+		HTTPClient:   httpClient,
 	}
 }
 
@@ -50,7 +50,7 @@ func (s *SwitchService) CheckServiceStatusAndUpdate(namespace, k string) {
 		zone = "release"
 	}
 
-	req, _ := http.NewRequest("POST", s.DomainURL+"api/function/updateShareFlag/"+zone+"/"+k+"/true", nil)
+	req, _ := http.NewRequest("POST", s.WebDomainURL+"api/function/updateShareFlag/"+zone+"/"+k+"/true", nil)
 
 	for i := 0; i < 5; i++ {
 		time.Sleep(2 * time.Second)
